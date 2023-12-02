@@ -74,43 +74,18 @@ fn puzzle2(input: &Day1) -> u32 {
 }
 
 fn read_letter_digit(letter_digit: &str) -> Option<u32> {
-    if letter_digit.ends_with("one") {
-        return Some(1);
+    match letter_digit {
+        _ if letter_digit.ends_with("one") => Some(1),
+        _ if letter_digit.ends_with("two") => Some(2),
+        _ if letter_digit.ends_with("three") => Some(3),
+        _ if letter_digit.ends_with("four") => Some(4),
+        _ if letter_digit.ends_with("five") => Some(5),
+        _ if letter_digit.ends_with("six") => Some(6),
+        _ if letter_digit.ends_with("seven") => Some(7),
+        _ if letter_digit.ends_with("eight") => Some(8),
+        _ if letter_digit.ends_with("nine") => Some(9),
+        _ => None,
     }
-
-    if letter_digit.ends_with("two") {
-        return Some(2);
-    }
-
-    if letter_digit.ends_with("three") {
-        return Some(3);
-    }
-
-    if letter_digit.ends_with("four") {
-        return Some(4);
-    }
-
-    if letter_digit.ends_with("five") {
-        return Some(5);
-    }
-
-    if letter_digit.ends_with("six") {
-        return Some(6);
-    }
-
-    if letter_digit.ends_with("seven") {
-        return Some(7);
-    }
-
-    if letter_digit.ends_with("eight") {
-        return Some(8);
-    }
-
-    if letter_digit.ends_with("nine") {
-        return Some(9);
-    }
-
-    None
 }
 
 #[cfg(test)]
