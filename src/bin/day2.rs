@@ -19,8 +19,10 @@ fn main() {
     let input = read_input("inputs/day2.txt");
 
     let p1_result = puzzle1(&input);
+    let p2_result = puzzle2(&input);
 
     println!("Puzzle #1: {}", p1_result);
+    println!("Puzzle #2: {}", p2_result);
 }
 
 fn read_input(path: &str) -> Day2 {
@@ -97,6 +99,31 @@ fn puzzle1(input: &Day2) -> u32 {
         .sum::<u32>()
 }
 
+fn puzzle2(input: &Day2) -> u32 {
+    input
+        .iter()
+        .map(|game| {
+            let mut min_red = 0;
+            let mut min_green = 0;
+            let mut min_blue = 0;
+
+            for Round { red, green, blue } in game.rounds.iter() {
+                if *red > min_red {
+                    min_red = *red
+                }
+                if *green > min_green {
+                    min_green = *green
+                }
+                if *blue > min_blue {
+                    min_blue = *blue
+                }
+            }
+
+            min_red * min_green * min_blue
+        })
+        .sum::<u32>()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -106,5 +133,12 @@ mod tests {
         let test_input = read_input("inputs/day2_test.txt");
 
         assert_eq!(puzzle1(&test_input), 8)
+    }
+
+    #[test]
+    fn puzzle2_test() {
+        let test_input = read_input("inputs/day2_test.txt");
+
+        assert_eq!(puzzle2(&test_input), 2286)
     }
 }
