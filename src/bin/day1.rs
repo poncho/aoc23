@@ -68,7 +68,7 @@ fn puzzle2(input: &Day1) -> u32 {
                 }
             }
 
-            (first_digit.unwrap() * 10) + last_digit;
+            (first_digit.unwrap() * 10) + last_digit
         })
         .sum()
 }
