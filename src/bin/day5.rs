@@ -21,9 +21,12 @@ struct SeedMapper {
 
 fn main() {
     let input = read_input("inputs/day5.txt");
-    let p1_result = puzzle1(&input);
 
+    let p1_result = puzzle1(&input);
     println!("Puzzle #1: {}", p1_result);
+
+    let p2_result = puzzle2(&input);
+    println!("Puzzle #2: {}", p2_result);
 }
 
 fn read_input(path: &str) -> SeedMapper {
@@ -86,18 +89,37 @@ fn puzzle1(input: &SeedMapper) -> usize {
     input
         .seeds
         .iter()
-        .map(|seed| {
-            let soil: usize = next_step(input, &MapperType::SeedSoil, seed);
-            let fertilizer: usize = next_step(input, &MapperType::SoilFertilizer, &soil);
-            let water: usize = next_step(input, &MapperType::FertilizerWater, &fertilizer);
-            let light: usize = next_step(input, &MapperType::WaterLight, &water);
-            let temperature: usize = next_step(input, &MapperType::LightTemperature, &light);
-            let humidity: usize = next_step(input, &MapperType::TemperatureHumidity, &temperature);
+        .map(|seed| get_seed_location(input, seed))
+        .min()
+        .unwrap()
+}
 
-            next_step(input, &MapperType::HumidityLocation, &humidity)
+fn puzzle2(input: &SeedMapper) -> usize {
+    input
+        .seeds
+        .chunks(2)
+        .map(|chunk| {
+            let range_start = chunk[0];
+            let length = chunk[1];
+
+            (range_start..range_start + length)
+                .map(|seed| get_seed_location(input, &seed))
+                .min()
+                .unwrap()
         })
         .min()
         .unwrap()
+}
+
+fn get_seed_location(input: &SeedMapper, seed: &usize) -> usize {
+    let soil: usize = next_step(input, &MapperType::SeedSoil, seed);
+    let fertilizer: usize = next_step(input, &MapperType::SoilFertilizer, &soil);
+    let water: usize = next_step(input, &MapperType::FertilizerWater, &fertilizer);
+    let light: usize = next_step(input, &MapperType::WaterLight, &water);
+    let temperature: usize = next_step(input, &MapperType::LightTemperature, &light);
+    let humidity: usize = next_step(input, &MapperType::TemperatureHumidity, &temperature);
+
+    next_step(input, &MapperType::HumidityLocation, &humidity)
 }
 
 fn next_step(input: &SeedMapper, mapper: &MapperType, value: &usize) -> usize {
@@ -106,7 +128,7 @@ fn next_step(input: &SeedMapper, mapper: &MapperType, value: &usize) -> usize {
         .get(mapper)
         .unwrap()
         .iter()
-        .find(|(source, _dest, range_length)| (*source..*source + *range_length).contains(value))
+        .find(|(source, _dest, range_length)| *value >= *source && *value < *source + *range_length)
     {
         Some((source, dest, _range_length)) => dest + (value - source),
         None => *value,
@@ -124,5 +146,12 @@ mod tests {
         let test_input = read_input(TEST_FILE);
 
         assert_eq!(puzzle1(&test_input), 35)
+    }
+
+    #[test]
+    fn puzzle2_test() {
+        let test_input = read_input(TEST_FILE);
+
+        assert_eq!(puzzle2(&test_input), 46)
     }
 }
