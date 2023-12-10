@@ -7,6 +7,9 @@ fn main() {
 
     let p1_result = puzzle1(&input);
     println!("Puzzle #1: {}", p1_result);
+
+    let p2_result = puzzle2(&input);
+    println!("Puzzle #2: {}", p2_result);
 }
 
 fn read_input(path: &str) -> Day6 {
@@ -43,6 +46,27 @@ fn puzzle1(input: &Day6) -> usize {
         .unwrap()
 }
 
+fn puzzle2(input: &Day6) -> usize {
+    let (race_times, record_times) = input;
+
+    let race = fold_to_one_time(race_times);
+    let record = fold_to_one_time(record_times);
+
+    (0..=race)
+        .filter(|hold_time| hold_time * (race - hold_time) > record)
+        .count()
+}
+
+fn fold_to_one_time(times: &Vec<u32>) -> usize {
+    times
+        .iter()
+        .map(|t| t.to_string())
+        .reduce(|acc: String, t| acc + &t)
+        .unwrap()
+        .parse::<usize>()
+        .unwrap()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -54,5 +78,12 @@ mod tests {
         let test_input = read_input(TEST_FILE);
 
         assert_eq!(puzzle1(&test_input), 288)
+    }
+
+    #[test]
+    fn puzzle2_test() {
+        let test_input = read_input(TEST_FILE);
+
+        assert_eq!(puzzle2(&test_input), 71503)
     }
 }
